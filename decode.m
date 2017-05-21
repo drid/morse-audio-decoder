@@ -1,14 +1,17 @@
 pkg load signal
-clear all
+%clear all
 
-_PLAYBACK = true;
+_PLAYBACK = false;
 _PLOT = false;
 
-%arg_list = argv()
-%filename = arg_list{1}
-filename = '';
+if (exist("fpath", "var") == 0)
+  fpath = ""
+endif
 
-audio=wavread(filename);
+% read file
+[filename fpath] = uigetfile({"*.wav;*.ogg", "Audio file"}, 'Select audio file', fpath)
+
+audio=audioread(strcat(fpath,filename));
 
 w1=medfilt1(abs(audio), 1000);
 
@@ -50,6 +53,9 @@ for idx = w1(1)+2:2:size(len)-1
 endfor
 
 printf("Packet: %s\n", packet)
+
+% UPSat Decode
+upsatDecode(packet);
 
 %% Playback
 if _PLAYBACK
