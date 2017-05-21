@@ -52,10 +52,10 @@ function upsatDecode(packet, source, timestamp)
   
   if packet(10) == "0"
     printf ("COMMS Uptime (m): No Data\n");
-  elseif packet(10) < "M"
-    printf ("COMMS Uptime (m): %d\n", packet(10)-65);
-  elseif packet(10) < "Q"
-    printf ("COMMS Uptime (m): %d\n", packet(10)-65);
+  elseif packet(10) > "P"
+    printf ("COMMS Uptime (m): %d - %d\n", (packet(10)-"P"-1)*4+20, (packet(10)-"P")*4+20);
+  elseif packet(10) > "L"
+    printf ("COMMS Uptime (m): %d - %d\n", (packet(10)-"L")*2+10, (packet(10)-"L"+1)*2+10);
   else
     printf ("COMMS Uptime (m): %d\n", packet(10)-65);
   endif
