@@ -32,8 +32,8 @@ w1 = not(w1);
 ind = find(diff(w1))+1;
 len=diff([1; ind]);
 
-symbol_threshold = max(len(2:2:end))/2;
-letter_threshold = min(len(1:2:end))*2;
+symbol_threshold = max(len(2:2:end))/2
+letter_threshold = min(len(1:2:end))*2
 
 morseC='';
 packet='';
@@ -52,10 +52,14 @@ for idx = w1(1)+2:2:size(len)-1
   endif
 endfor
 
-printf("Packet: %s\n", packet)
+printf("Packet: %s\n", packet);
+
+source = "N/A";
+timestamp = "";
+[source, timestamp] = sourceFileInfo(filename);
 
 % UPSat Decode
-upsatDecode(packet);
+upsatDecode(packet, source, timestamp);
 
 %% Playback
 if _PLAYBACK
