@@ -1,8 +1,9 @@
 pkg load signal
 clear w1 ind len
+close 
 
 _PLAYBACK = false;
-_PLOT = false;
+_PLOT = true;
 % temporal symbol thresholds detection
 symbol_threshold = 4000
 letter_threshold = 4000
@@ -17,8 +18,8 @@ endif
 audio=audioread(strcat(fpath,filename));
 
 % Filter audio
-w1=medfilt1(abs(audio), 1000);
-clear audio;
+w1=medfilt1(abs(audio), 2000);
+%clear audio;
 
 % Convert to logic levels
 level_threshold = (max(w1)-min(w1))/2+min(w1)
@@ -35,11 +36,12 @@ w1(w1 < level_threshold) =0;
 % Smooth again
 w1 = medfilt1(w1, 100);
 w1 = not(w1);
+plot(w1./10, "color", "g")
 
 % Detect transitions
 ind = find(diff(w1))+1;
 len=diff([1; ind]);
-
+len(end+1) = 10*letter_threshold;
 morseC='';
 packet='';
 
@@ -66,16 +68,15 @@ if _PLAYBACK
 endif
 
 % Detect morse letters
-for idx = w1(1)+2:2:size(len)-1
+for idx = 2:2:length(len)-1
   if len(idx) > symbol_threshold
     morseC = strcat(morseC, "-");
-   else
+  else
     morseC = strcat(morseC, ".");
-   endif
-
+  endif
+  
   if len(idx+1) > letter_threshold
     packet = strcat(packet, morse2char(morseC));
-    %printf ("%s %s\n", morse2char(morseC), morseC);
     morseC='';
   endif
 
@@ -85,7 +86,6 @@ for idx = w1(1)+2:2:size(len)-1
   endif
   
 endfor
-packetList{end+1} = packet;
 
 %%%% UPSat specific code
 % Source info

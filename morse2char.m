@@ -16,7 +16,7 @@ function character = morse2char(mc)
     case "."
       character = 'E';
       return
-    case "..-.."
+    case "..-."
       character = 'F';
       return
     case "--."
